@@ -124,6 +124,9 @@ Required columns for batch upload:
 Optional column:
 - `bug_id` for easier reading in the ranked result
 
+Included demo file:
+- `data/demo_batch_ranking_sample.csv` — a hand-crafted batch input with a good mix of critical, medium, and low-priority examples for presentations
+
 ## Notes
 - The dataset is synthetic, designed for presentation/demo purposes.
 - The model is a binary classifier: `high_priority` vs `not_high_priority`.
