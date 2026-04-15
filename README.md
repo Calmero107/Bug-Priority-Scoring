@@ -1,14 +1,12 @@
-# Bug Priority Scoring
+# Log Priority Scoring
 
-A simple machine learning demo for prioritizing software bugs.
+A machine learning demo for prioritizing incidents from raw log strings.
 
-This project includes:
-- a synthetic dataset generator
-- a training script for a bug priority classifier
-- a Streamlit web app for interactive prediction
-
-## Problem
-Given basic bug signals such as environment, affected users, crash impact, payment impact, workaround availability, and customer tier, predict whether a bug should be treated as **High Priority**.
+This project follows a practical approach:
+1. ingest raw log lines that look like real production logs
+2. extract structured signals using regex + keyword rules
+3. score each log with a machine learning model
+4. rank logs from highest to lowest priority
 
 ## Project structure
 
@@ -18,14 +16,16 @@ Given basic bug signals such as environment, affected users, crash impact, payme
 ├── generate_data.py
 ├── train_model.py
 ├── data/
-│   └── bugs.csv
+│   ├── demo_log_batch.txt
+│   └── logs.csv
 ├── models/
-│   └── bug_priority_pipeline.joblib
+│   └── log_priority_pipeline.joblib
 ├── requirements.txt
 └── src/
     └── bug_priority/
         ├── __init__.py
         ├── data_generation.py
+        ├── log_parser.py
         └── model.py
 ```
 
@@ -55,7 +55,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 3. Generate dataset
+### 3. Generate synthetic log dataset
 ```bash
 python generate_data.py
 ```
@@ -75,60 +75,43 @@ If `streamlit` is not in PATH, use:
 python -m streamlit run app.py
 ```
 
-Then open the local URL shown by Streamlit in your browser.
+## Demo pages
 
-## Demo inputs
-Try these examples in the UI.
+### 1. Single Log Demo
+Paste one raw log line and click **Evaluate**.
+The app will:
+- parse the log with regex/rules
+- extract structured features
+- predict the priority score
+- show the extracted signals used for scoring
 
-### Likely high priority
-- environment: prod
-- module: payments
-- affected users: 500
-- frequency last 24h: 1200
-- crash: yes
-- payment related: yes
-- workaround: no
-- customer tier: enterprise
-- days since release: 1
-- sla breach risk: yes
+### 2. Batch Log Ranking Demo
+Paste multiple log lines, one per line, then click **Rank Logs**.
+The app will:
+- parse every log
+- add repetition counts for similar patterns
+- score each log
+- sort from highest to lowest priority
+- let you download the ranked result as CSV
 
-### Likely lower priority
-- environment: dev
-- module: ui
-- affected users: 3
-- frequency last 24h: 5
-- crash: no
-- payment related: no
-- workaround: yes
-- customer tier: free
-- days since release: 45
-- sla breach risk: no
+Included sample input:
+- `data/demo_log_batch.txt`
 
-## Batch Ranking Demo
-The Streamlit app now includes two pages:
-- **Single Bug Demo**: predict the priority for one bug interactively
-- **Batch Ranking Demo**: upload a CSV, score all bugs, sort them from highest to lowest priority, and download the ranked output
-
-Required columns for batch upload:
-- `environment`
-- `module`
-- `customer_tier`
-- `affected_users_count`
-- `frequency_last_24h`
-- `days_since_release`
-- `is_crash`
-- `is_payment_related`
-- `has_workaround`
-- `sla_breach_risk`
-
-Optional column:
-- `bug_id` for easier reading in the ranked result
-
-Included demo file:
-- `data/demo_batch_ranking_sample.csv` — a hand-crafted batch input with a good mix of critical, medium, and low-priority examples for presentations
+## Extracted features
+The parser extracts practical signals such as:
+- environment: `prod`, `staging`, `dev`
+- level: `INFO`, `WARN`, `ERROR`, `FATAL`
+- service name and logical module
+- error code
+- payment/auth/db/timeout/rate-limit/oom flags
+- customer impact flag
+- workaround flag
+- SLA breach risk flag
+- estimated affected users
+- estimated frequency
+- repeat count for the same pattern
 
 ## Notes
-- The dataset is synthetic, designed for presentation/demo purposes.
-- The model is a binary classifier: `high_priority` vs `not_high_priority`.
-- The app also shows the predicted probability for easier explanation during a presentation.
-- For realistic usage, the batch page is closer to how a triage system would be used in practice.
+- The dataset is synthetic, but the raw logs are generated to look realistic enough for a presentation demo.
+- The approach is intentionally practical: rule/regex feature extraction first, then ML scoring.
+- This is closer to how many real systems work than sending raw logs directly into a model with no preprocessing.

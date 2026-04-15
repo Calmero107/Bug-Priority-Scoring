@@ -5,15 +5,13 @@ import pandas as pd
 from src.bug_priority.model import save_model, train_model
 
 
-DATA_PATH = Path("data") / "bugs.csv"
-MODEL_PATH = Path("models") / "bug_priority_pipeline.joblib"
+DATA_PATH = Path("data") / "logs.csv"
+MODEL_PATH = Path("models") / "log_priority_pipeline.joblib"
 
 
 if __name__ == "__main__":
     if not DATA_PATH.exists():
-        raise FileNotFoundError(
-            f"Dataset not found at {DATA_PATH}. Run `python generate_data.py` first."
-        )
+        raise FileNotFoundError(f"Dataset not found at {DATA_PATH}. Run `python generate_data.py` first.")
 
     df = pd.read_csv(DATA_PATH)
     result = train_model(df)

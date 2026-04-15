@@ -1,0 +1,8 @@
+2026-04-15T10:21:11Z ERROR payment-service Charge failed order_id=92813 user=1842 error=DB_TIMEOUT env=prod enterprise customer affected repeated spike after deploy urgent sev1
+2026-04-15T10:21:15Z FATAL auth-service OutOfMemory during login flow user=8831 reason=OUT_OF_MEMORY env=prod vip tenant impacted every request failing post-deploy regression
+2026-04-15T10:21:20Z WARN frontend-service Checkout button not responding on Safari env=prod fallback available workaround customer complaint opened
+2026-04-15T10:21:25Z ERROR notification-service SMTP timeout for customer=1882 env=staging repeated spike after deploy
+2026-04-15T10:21:30Z INFO reporting-service Scheduled export completed tenant=tenant-8 env=prod
+2026-04-15T10:21:35Z ERROR integrations-service Partner webhook failed partner=tenant-2 error=PARTNER_API_DOWN env=prod enterprise customer affected exception raised
+2026-04-15T10:21:40Z WARN search-service Search query slow for user=552 error=SEARCH_TIMEOUT env=dev manual retry possible
+2026-04-15T10:21:45Z ERROR payment-service Checkout request rejected for user=783 error=PAYMENT_GATEWAY_DOWN env=prod all users impacted urgent sev1 exception raised
