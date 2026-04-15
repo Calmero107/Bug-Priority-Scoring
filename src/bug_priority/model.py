@@ -109,3 +109,13 @@ def predict_bug(model: Pipeline, bug_input: pd.DataFrame) -> dict[str, Any]:
         "label": label,
         "high_priority_probability": probability,
     }
+
+
+def rank_bugs(model: Pipeline, bugs_df: pd.DataFrame) -> pd.DataFrame:
+    ranked = bugs_df.copy()
+    ranked["high_priority_probability"] = model.predict_proba(ranked[FEATURES])[:, 1]
+    ranked["predicted_priority"] = ranked["high_priority_probability"].apply(
+        lambda p: "High Priority" if p >= 0.5 else "Normal Priority"
+    )
+    ranked = ranked.sort_values(by="high_priority_probability", ascending=False).reset_index(drop=True)
+    return ranked
